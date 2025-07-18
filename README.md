@@ -1,2 +1,2 @@
-# Practical-of-patho-AUC-61
+# P of Patho
 23 Slides
