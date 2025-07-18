@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pathology Flashcards - Practice Slides</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .flashcard-container {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            max-width: 650px;
+            width: 100%;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            min-height: 820px;
+            box-sizing: border-box;
+        }
+        .slide-image {
+            width: 100%;
+            max-width: 600px;
+            height: 480px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-color: #f0f2f5;
+            object-fit: contain;
+            border: 1px solid #dee2e6;
+            display: block;
+        }
+        .card-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1d3557;
+            text-align: center;
+        }
+        .card-desc {
+            color: #457b9d;
+            margin-bottom: 20px;
+            font-weight: 400;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        .card-answer {
+            display: none;
+            background: #f1faee;
+            color: #2a9d8f;
+            font-size: 1.05em;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            border: 1px solid #a8dadc;
+            white-space: pre-line;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .controls {
+            margin-top: auto;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+        }
+        button {
+            background-color: #457b9d;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 26px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.25s, box-shadow 0.25s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        button:hover,
+        button:focus {
+            background-color: #1d3557;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+        button#showBtn {
+            background-color: #e63946;
+        }
+        button#showBtn:hover {
+            background-color: #d62828;
+        }
+        .step-indicator {
+            color: #6c757d;
+            font-size: 1em;
+            font-weight: 500;
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: #e9ecef;
+            border-radius: 16px;
+            padding: 5px 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="flashcard-container">
+        <div class="step-indicator" id="card-number"></div>
+        <img src="" class="slide-image" id="slide-image" alt="Practical Slide Image" />
+        <div class="card-title">Identify</div>
+        <div class="card-desc">What does the arrow indicate?</div>
+        <div class="card-answer" id="answer"></div>
+        <div class="controls">
+            <button id="prevBtn">Previous</button>
+            <button id="showBtn">Show Answer</button>
+            <button id="nextBtn">Next</button>
+        </div>
+    </div>
+    <script>
+        const cards = [
+            {
+                img: "patho 1.png",
+                answer: `• Rheumatic Endocarditis
+• Mitral & Aortic Stenosis and Incompetence
+• Left ventricular hypertrophy and dilatation
+
+1- Dilated left ventricle with Subendocardial Fibrosis
+2- Hypertrophied left ventricle
+3- Aortic cusps: thick, fibrosed, with rolled edges`
+            },
+            {
+                img: "patho 2.png",
+                answer: `• Rheumatic Endocarditis
+• Mitral & Aortic Stenosis
+• Left ventricular hypertrophy and dilatation
+
+1- Thickened, hypertrophied left ventricle
+2- Aortic cusps: thick, fibrosed, adherent with rolled edges
+3- Thickened and fibrosed mitral cusps
+4- Dilated, fibrosed, ulcerated left atrium`
+            },
+            {
+                img: "patho 3.png",
+                answer: `• Rheumatic Endocarditis 
+• Mitral & Aortic Stenosis
+• Left ventricular hypertrophy and dilatation
+
+1- Aortic cusps: thick, fibrosed, adherent with rolled edges
+2- Thickened and fibrosed mitral cusps
+3- Thickened, hypertrophied left ventricle
+4- Dilated ventricle and Subendocardial fibrosis`
+            },
+            {
+                img: "patho 4.png",
+                answer: `Rheumatic Myocarditis
+
+1) Normal myocardium 
+2) Thick walled Blood vessels 
+3) Perivascular Aschoff body`
+            },
+            {
+                img: "patho 5.png",
+                answer: `Rheumatic Myocarditis
+
+1) Fibrinoid degeneration of collagen fibers and interstitial edema 
+2) Aschoff giant cell`
+            },
+            {
+                img: "patho 6.png",
+                answer: `Infective Endocarditis of Aortic Valve
+
+1- Normal-looking, transparent aortic cusp
+2- Polypoid, brown vegetation hanging from the cusp`
+            },
+            {
+                img: "patho 7.png",
+                answer: `Bacterial Endocarditis
+
+1) Ulcerated valve cusp 
+2) Bacterial colonies 
+3) Inflammatory cells`
+            },
+            {
+                img: "patho 8.png",
+                answer: `Bacterial Endocarditis
+
+1) Sparse inflammatory cells 
+2) Fibrin 
+3) Colonies of bacteria`
+            },
+            {
+                img: "patho 9.png",
+                answer: `Recent Myocardial Infarction
+
+1- Atheromatous plaque 
+2- Occluded coronary orifice
+3- Patent coronary orifices 
+4- Hemorrhagic myocardial infarct`
+            },
+            {
+                img: "patho 10.png",
+                answer: `• Chonic Ischemic Heart Disease
+• Healed Myocardial Infarction 
+• Apical Mural Aneurysm
+
+1- Fibrosed and atrophic myocardium
+2- Apical mural aneurysm occupied by laminated thrombus
+3- Fibrosed pericardium`
+            },
+            {
+                img: "patho 11.png",
+                answer: `• Chonic Ischemic Heart Disease
+• Healed Myocardial Infarction 
+• Apical Mural Aneurysm 
+• Atherosclerosis of aorta
+
+1- Pale yellow raised atheromatous plaque around narrow arterial orifices
+2- Fibrosed and atrophic myocardium
+3- Apical mural aneurysm occupied by laminated thrombus
+4- Fibrosed pericardium`
+            },
+            {
+                img: "patho 12.png",
+                answer: `• Chronic Ischemic Heart Disease
+• Atherosclerosis of aorta
+
+- Pale yellow streaks of atherosclerosis
+- Narrow arterial orifices
+- Atrophic myocardium`
+            },
+            {
+                img: "patho 13.png",
+                answer: `• Chronic Ischemic Heart Disease
+• Complicated atherosclerosis of aorta
+
+1- Pale yellow, ulcerated patches of atherosclerosis with Narrow arterial orifices
+2- Atrophic myocardium`
+            },
+            {
+                img: "patho 14.png",
+                answer: `Left Ventricular Hypertrophy
+
+1) Thick IV septum pulging into right ventricle
+2) Narrow left ventricular lumen 
+3) hypertrophic myocardium`
+            },
+            {
+                img: "patho 15.png",
+                answer: `Saccular aneurysm of aortic arch Atherosclerosis of aorta
+
+1- Saccular aneurysm of aortic arch
+2- Ascending aorta showing raised yellow focally ulcerated and calcified atheromas`
+            },
+            {
+                img: "patho 16.png",
+                answer: `Saccular aneurysm of aortic arch Atherosclerosis of aorta
+
+1- Saccular aneurysm of aortic arch
+2- Ascending aorta showing raised yellow focally ulcerated and calcified atheromas`
+            },
+            {
+                img: "patho 17.png",
+                answer: `Saccular aneurysm of aortic arch Atherosclerosis (and syphilis) of aorta
+
+1- Saccular aneurysm of aortic arch filled with laminated thrombus
+2- Ascending aorta showing raised yellow focally ulcerated and calcified atheromas`
+            },
+            {
+                img: "patho 18.png",
+                answer: `Saccular aneurysm of aortic arch Atherosclerosis (and syphilis) of aorta
+
+1- Saccular aneurysm of aortic arch filled with laminated thrombus
+2- Ascending aorta showing raised yellow focally ulcerated and calcified atheromas`
+            },
+            {
+                img: "patho 19.png",
+                answer: `Severe atherosclerosis of aorta
+
+1) Extensive, elevated, yellow-white plaques 
+2) Prominent and patent vascular openings`
+            },
+            {
+                img: "patho 20.png",
+                answer: `• Chronic Ischemic Heart Disease 
+• Complicated atherosclerosis of aorta
+
+1- Pale yellow, ulcerated patches of atherosclerosis
+2- Narrow arterial orifices 
+3- Atrophic myocardium`
+            },
+            {
+                img: "patho 21.png",
+                answer: `Saccular aneurysm of aortic arch Atherosclerosis of aorta
+
+1- Saccular aneurysm of aortic arch
+2- Ascending aorta showing raised yellow focally ulcerated and calcified atheromas`
+            },
+            {
+                img: "patho 22.png",
+                answer: `Atheroma
+
+1) Focal calcification
+2) Fibrosis 
+3) Ulcerated endothelium
+4) Foam cells
+5) Cholesterol clefts
+6) Recanalisation`
+            },
+            {
+                img: "patho 23.png",
+                answer: `Ruptured Aortic Aneurysm
+
+1) Bronchus 
+2) Aneurysmal dilatation at the junction of the arch and descending aorta
+3) Rod introduced at the area of rupture
+4) Yellow atheromatous patches`
+            }
+        ];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        let currentCardIndex = 0;
+        const imageElement = document.getElementById('slide-image');
+        const answerElement = document.getElementById('answer');
+        const cardNumberElement = document.getElementById('card-number');
+        const showButton = document.getElementById('showBtn');
+        const nextButton = document.getElementById('nextBtn');
+        const prevButton = document.getElementById('prevBtn');
+
+        function displayCard() {
+            const card = cards[currentCardIndex];
+            imageElement.src = card.img;
+            answerElement.style.display = 'none';
+            answerElement.textContent = card.answer;
+            cardNumberElement.textContent = `Card ${currentCardIndex + 1}/${cards.length}`;
+            showButton.disabled = false;
+            showButton.textContent = 'Show Answer';
+        }
+        showButton.onclick = function() {
+            answerElement.style.display = 'block';
+            this.disabled = true;
+        };
+        nextButton.onclick = function() {
+            currentCardIndex = (currentCardIndex + 1) % cards.length;
+            displayCard();
+        };
+        prevButton.onclick = function() {
+            currentCardIndex = (currentCardIndex - 1 + cards.length) % cards.length;
+            displayCard();
+        };
+        shuffleArray(cards);
+        displayCard();
+    </script>
+</body>
+</html>
